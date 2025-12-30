@@ -1,0 +1,91 @@
+{
+  "database_types_syntax": {
+    "MySQL": {
+      "date_functions": {
+        "current_date": "CURDATE() or CURRENT_DATE",
+        "current_timestamp": "NOW() or CURRENT_TIMESTAMP",
+        "date_subtract": "DATE_SUB(date, INTERVAL n DAY/MONTH/YEAR)",
+        "date_add": "DATE_ADD(date, INTERVAL n DAY/MONTH/YEAR)",
+        "date_diff": "DATEDIFF(date1, date2)",
+        "date_format": "DATE_FORMAT(date, '%Y-%m-%d')"
+      },
+      "string_functions": {
+        "concatenate": "CONCAT(str1, str2) or CONCAT_WS(separator, str1, str2)",
+        "substring": "SUBSTRING(str, start, length)",
+        "lowercase": "LOWER(str)",
+        "uppercase": "UPPER(str)",
+        "trim": "TRIM(str)"
+      },
+      "limit": "LIMIT n",
+      "auto_increment": "AUTO_INCREMENT",
+      "null_safe_equal": "<=> for NULL-safe comparison"
+    },
+    "PostgreSQL": {
+      "date_functions": {
+        "current_date": "CURRENT_DATE",
+        "current_timestamp": "CURRENT_TIMESTAMP or NOW()",
+        "date_subtract": "date - INTERVAL 'n days/months/years'",
+        "date_add": "date + INTERVAL 'n days/months/years'",
+        "date_diff": "date1 - date2 (returns interval)",
+        "date_format": "TO_CHAR(date, 'YYYY-MM-DD')"
+      },
+      "string_functions": {
+        "concatenate": "CONCAT(str1, str2) or str1 || str2",
+        "substring": "SUBSTRING(str FROM start FOR length)",
+        "lowercase": "LOWER(str)",
+        "uppercase": "UPPER(str)",
+        "trim": "TRIM(str)"
+      },
+      "limit": "LIMIT n OFFSET m",
+      "auto_increment": "SERIAL or GENERATED ALWAYS AS IDENTITY",
+      "boolean_type": "BOOLEAN (true/false)"
+    },
+    "SQLite": {
+      "date_functions": {
+        "current_date": "DATE('now')",
+        "current_timestamp": "DATETIME('now')",
+        "date_subtract": "DATE(date, '-n days/months/years')",
+        "date_add": "DATE(date, '+n days/months/years')",
+        "date_diff": "JULIANDAY(date1) - JULIANDAY(date2)",
+        "date_format": "STRFTIME('%Y-%m-%d', date)"
+      },
+      "string_functions": {
+        "concatenate": "str1 || str2",
+        "substring": "SUBSTR(str, start, length)",
+        "lowercase": "LOWER(str)",
+        "uppercase": "UPPER(str)",
+        "trim": "TRIM(str)"
+      },
+      "limit": "LIMIT n OFFSET m",
+      "auto_increment": "AUTOINCREMENT",
+      "no_boolean": "Use INTEGER (0/1)"
+    },
+    "SQL_Server": {
+      "date_functions": {
+        "current_date": "GETDATE() or SYSDATETIME()",
+        "date_subtract": "DATEADD(DAY, -n, date)",
+        "date_add": "DATEADD(DAY, n, date)",
+        "date_diff": "DATEDIFF(DAY, date1, date2)",
+        "date_format": "FORMAT(date, 'yyyy-MM-dd')"
+      },
+      "string_functions": {
+        "concatenate": "CONCAT(str1, str2) or str1 + str2",
+        "substring": "SUBSTRING(str, start, length)",
+        "lowercase": "LOWER(str)",
+        "uppercase": "UPPER(str)",
+        "trim": "TRIM(str) or LTRIM(RTRIM(str))"
+      },
+      "limit": "TOP n or OFFSET-FETCH",
+      "auto_increment": "IDENTITY(1,1)",
+      "top_syntax": "SELECT TOP n"
+    }
+  },
+  "syntax_notes": {
+    "quotes": "Use single quotes for strings: 'value'",
+    "identifiers": "Use backticks (MySQL) or double quotes (PostgreSQL/SQL Server) for table/column names with spaces",
+    "case_sensitivity": "SQL keywords are case-insensitive but string comparisons may be case-sensitive",
+    "null_handling": "Use IS NULL and IS NOT NULL, not = NULL",
+    "division": "Be careful with integer division; cast to DECIMAL if needed",
+    "aliases": "Always use table aliases in multi-table queries for clarity"
+  }
+}

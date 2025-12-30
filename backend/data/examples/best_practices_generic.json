@@ -1,0 +1,93 @@
+{
+  "general_best_practices": [
+    "Always use explicit JOIN syntax instead of comma-separated tables",
+    "Use table aliases to make queries more readable",
+    "Specify column names explicitly instead of SELECT *",
+    "Use DISTINCT only when necessary (performance impact)",
+    "Add ORDER BY when result order matters",
+    "Use LIMIT/TOP to restrict large result sets",
+    "Check for NULL values explicitly with IS NULL/IS NOT NULL",
+    "Use parameterized queries to prevent SQL injection",
+    "Add indexes on frequently filtered/joined columns",
+    "Use EXISTS instead of COUNT(*) when checking for existence"
+  ],
+  "query_optimization": {
+    "avoid": [
+      "SELECT * - specify needed columns",
+      "Functions on indexed columns in WHERE clause",
+      "OR conditions - use UNION or IN instead",
+      "Implicit type conversions",
+      "Subqueries in SELECT list (use JOINs)",
+      "LIKE with leading wildcard '%value'"
+    ],
+    "prefer": [
+      "Explicit column lists",
+      "WHERE conditions on indexed columns",
+      "IN or UNION for multiple conditions",
+      "Explicit type casting",
+      "JOINs over subqueries",
+      "LIKE with trailing wildcard 'value%'"
+    ]
+  },
+  "common_mistakes": {
+    "null_comparison": {
+      "wrong": "column = NULL",
+      "correct": "column IS NULL"
+    },
+    "string_concatenation": {
+      "wrong": "Using + in all databases",
+      "correct": "Use CONCAT() or database-specific operator"
+    },
+    "date_arithmetic": {
+      "wrong": "date + 30 (assuming days)",
+      "correct": "Use database-specific date functions"
+    },
+    "count_vs_exists": {
+      "wrong": "WHERE (SELECT COUNT(*) FROM table) > 0",
+      "correct": "WHERE EXISTS (SELECT 1 FROM table)"
+    }
+  },
+  "domain_patterns": {
+    "e-commerce": {
+      "total_sales": "SUM(quantity * price)",
+      "active_orders": "status IN ('pending', 'processing')",
+      "customer_lifetime_value": "SUM(order_total) GROUP BY customer_id"
+    },
+    "healthcare": {
+      "current_admissions": "discharge_date IS NULL",
+      "patient_history": "ORDER BY admission_date DESC",
+      "active_prescriptions": "end_date IS NULL OR end_date > CURRENT_DATE"
+    },
+    "finance": {
+      "account_balance": "SUM(CASE WHEN type='credit' THEN amount ELSE -amount END)",
+      "pending_transactions": "status = 'pending' AND created_at > date - INTERVAL 30 DAY",
+      "monthly_summary": "DATE_TRUNC('month', date) GROUP BY month"
+    },
+    "hr": {
+      "active_employees": "termination_date IS NULL",
+      "tenure": "DATEDIFF(CURRENT_DATE, hire_date) / 365",
+      "department_headcount": "COUNT(*) GROUP BY department"
+    },
+    "inventory": {
+      "low_stock": "quantity < reorder_level",
+      "out_of_stock": "quantity = 0 AND status = 'active'",
+      "stock_value": "SUM(quantity * unit_price)"
+    }
+  },
+  "temporal_patterns": {
+    "current": "end_date IS NULL or status = 'active'",
+    "historical": "end_date IS NOT NULL or status IN ('closed', 'archived')",
+    "recent": "created_at >= DATE_SUB(CURRENT_DATE, INTERVAL n DAY)",
+    "upcoming": "scheduled_date > CURRENT_DATE",
+    "overdue": "due_date < CURRENT_DATE AND status != 'completed'",
+    "this_month": "MONTH(date_column) = MONTH(CURRENT_DATE)",
+    "this_year": "YEAR(date_column) = YEAR(CURRENT_DATE)",
+    "last_n_days": "date_column >= CURRENT_DATE - INTERVAL n DAY"
+  },
+  "relationship_inference": {
+    "one_to_many": "Parent table primary key referenced by child table foreign key",
+    "many_to_many": "Junction table with foreign keys to both tables",
+    "self_referential": "Table references its own primary key (e.g., employee.manager_id -> employee.id)",
+    "lookup_tables": "Small reference tables (status, category, type) joined by code/id"
+  }
+}

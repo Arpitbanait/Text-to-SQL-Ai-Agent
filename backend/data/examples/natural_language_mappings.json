@@ -1,0 +1,106 @@
+{
+  "natural_language_mappings": {
+    "quantifiers": {
+      "all": "No WHERE clause or status = 'active'",
+      "any": "LIMIT 1 or EXISTS",
+      "each": "GROUP BY",
+      "every": "GROUP BY with COUNT(*)",
+      "no/none": "NOT EXISTS or COUNT(*) = 0",
+      "some": "No specific constraint, implies > 0"
+    },
+    "temporal_words": {
+      "now/current/today": "CURRENT_DATE or NOW()",
+      "yesterday": "CURRENT_DATE - 1",
+      "tomorrow": "CURRENT_DATE + 1",
+      "last week": "Last 7 days",
+      "this month": "Current month",
+      "recent": "Last 30 days typically",
+      "latest": "ORDER BY date DESC LIMIT 1",
+      "oldest": "ORDER BY date ASC LIMIT 1",
+      "since": "date >= specified_date",
+      "until/before": "date < specified_date",
+      "between": "date BETWEEN date1 AND date2",
+      "during": "Within a time period"
+    },
+    "comparison_words": {
+      "more than/greater than/above": "> or >=",
+      "less than/fewer than/below": "< or <=",
+      "at least": ">=",
+      "at most": "<=",
+      "equal to/exactly": "=",
+      "not equal/different from": "!= or <>",
+      "between": "BETWEEN x AND y",
+      "around/approximately": "BETWEEN x-margin AND x+margin"
+    },
+    "aggregation_words": {
+      "total/sum": "SUM()",
+      "average/mean": "AVG()",
+      "count/number of": "COUNT()",
+      "highest/maximum/largest": "MAX()",
+      "lowest/minimum/smallest": "MIN()",
+      "unique/distinct": "COUNT(DISTINCT) or DISTINCT"
+    },
+    "status_words": {
+      "active/current/ongoing": "status = 'active' or end_date IS NULL",
+      "inactive/closed/ended": "status = 'inactive' or end_date IS NOT NULL",
+      "pending/waiting": "status = 'pending'",
+      "completed/finished/done": "status = 'completed'",
+      "cancelled/deleted": "status = 'cancelled' or is_deleted = true",
+      "open": "status IN ('new', 'open', 'pending')",
+      "archived": "status = 'archived' or archived_at IS NOT NULL"
+    },
+    "action_words": {
+      "show/display/list": "SELECT",
+      "find/get/retrieve": "SELECT with WHERE",
+      "calculate/compute": "Use aggregate functions",
+      "compare": "Use comparison operators or CASE",
+      "rank/order": "ORDER BY with LIMIT",
+      "group": "GROUP BY",
+      "summarize": "Aggregate with GROUP BY"
+    },
+    "relationship_words": {
+      "with/having/that have": "INNER JOIN or WHERE EXISTS",
+      "without/that don't have": "LEFT JOIN with NULL or NOT EXISTS",
+      "belonging to": "WHERE foreign_key = value or JOIN",
+      "associated with/related to": "JOIN on foreign key",
+      "under/in": "WHERE parent_id = value or category = value"
+    }
+  },
+  "question_patterns": {
+    "how_many": {
+      "pattern": "How many {entity}...",
+      "sql": "SELECT COUNT(*) FROM {table}",
+      "example": "How many patients? -> SELECT COUNT(*) FROM patients"
+    },
+    "what_is_total": {
+      "pattern": "What is the total {metric}...",
+      "sql": "SELECT SUM({column}) FROM {table}",
+      "example": "What is the total cost? -> SELECT SUM(cost) FROM orders"
+    },
+    "list_all": {
+      "pattern": "List all {entity} where...",
+      "sql": "SELECT * FROM {table} WHERE {condition}",
+      "example": "List all active users -> SELECT * FROM users WHERE status = 'active'"
+    },
+    "who_has": {
+      "pattern": "Who has {condition}...",
+      "sql": "SELECT user FROM {table} WHERE {condition}",
+      "example": "Who has the highest score? -> SELECT name FROM players ORDER BY score DESC LIMIT 1"
+    },
+    "which_department": {
+      "pattern": "Which {entity} has the most/least...",
+      "sql": "SELECT {entity}, COUNT(*) FROM {table} GROUP BY {entity} ORDER BY COUNT(*) DESC LIMIT 1",
+      "example": "Which department has the most employees? -> SELECT department, COUNT(*) FROM employees GROUP BY department ORDER BY COUNT(*) DESC LIMIT 1"
+    },
+    "average_by": {
+      "pattern": "Average {metric} by {dimension}",
+      "sql": "SELECT {dimension}, AVG({metric}) FROM {table} GROUP BY {dimension}",
+      "example": "Average salary by department -> SELECT department, AVG(salary) FROM employees GROUP BY department"
+    },
+    "find_with_multiple_conditions": {
+      "pattern": "Find {entity} with {condition1} and {condition2}",
+      "sql": "SELECT * FROM {table} WHERE {condition1} AND {condition2}",
+      "example": "Find products with price > 100 and in stock -> SELECT * FROM products WHERE price > 100 AND quantity > 0"
+    }
+  }
+}

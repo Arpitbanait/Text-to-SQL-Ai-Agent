@@ -1,0 +1,54 @@
+{
+  "sql_patterns": {
+    "aggregation_queries": {
+      "count_total": "SELECT COUNT(*) FROM {table}",
+      "count_distinct": "SELECT COUNT(DISTINCT {column}) FROM {table}",
+      "sum_by_group": "SELECT {group_column}, SUM({value_column}) FROM {table} GROUP BY {group_column}",
+      "average": "SELECT AVG({column}) FROM {table}",
+      "min_max": "SELECT MIN({column}), MAX({column}) FROM {table}"
+    },
+    "date_filtering": {
+      "last_n_days": "WHERE {date_column} >= DATE_SUB(CURRENT_DATE, INTERVAL {n} DAY)",
+      "last_n_days_postgres": "WHERE {date_column} >= CURRENT_DATE - INTERVAL '{n} days'",
+      "between_dates": "WHERE {date_column} BETWEEN '{start_date}' AND '{end_date}'",
+      "current_month": "WHERE MONTH({date_column}) = MONTH(CURRENT_DATE) AND YEAR({date_column}) = YEAR(CURRENT_DATE)",
+      "year_to_date": "WHERE {date_column} >= DATE_TRUNC('year', CURRENT_DATE)"
+    },
+    "joins": {
+      "inner_join": "SELECT * FROM {table1} t1 INNER JOIN {table2} t2 ON t1.{key} = t2.{key}",
+      "left_join": "SELECT * FROM {table1} t1 LEFT JOIN {table2} t2 ON t1.{key} = t2.{key}",
+      "multiple_joins": "SELECT * FROM {table1} t1 JOIN {table2} t2 ON t1.id = t2.{fk} JOIN {table3} t3 ON t2.id = t3.{fk}"
+    },
+    "filtering": {
+      "null_check": "WHERE {column} IS NULL",
+      "not_null": "WHERE {column} IS NOT NULL",
+      "in_list": "WHERE {column} IN ({value1}, {value2}, {value3})",
+      "like_pattern": "WHERE {column} LIKE '%{pattern}%'",
+      "range": "WHERE {column} BETWEEN {min} AND {max}"
+    },
+    "sorting_limiting": {
+      "order_by_desc": "ORDER BY {column} DESC",
+      "top_n": "ORDER BY {column} DESC LIMIT {n}",
+      "pagination": "LIMIT {limit} OFFSET {offset}"
+    },
+    "subqueries": {
+      "in_subquery": "WHERE {column} IN (SELECT {column} FROM {table} WHERE {condition})",
+      "exists": "WHERE EXISTS (SELECT 1 FROM {table} WHERE {condition})",
+      "scalar_subquery": "SELECT (SELECT MAX({column}) FROM {table}) AS max_value"
+    }
+  },
+  "common_keywords": {
+    "total": "COUNT(*) or SUM()",
+    "unique": "COUNT(DISTINCT column)",
+    "average": "AVG()",
+    "highest/maximum": "MAX() or ORDER BY DESC LIMIT 1",
+    "lowest/minimum": "MIN() or ORDER BY ASC LIMIT 1",
+    "latest/recent": "ORDER BY date_column DESC LIMIT n",
+    "oldest/first": "ORDER BY date_column ASC LIMIT n",
+    "active/current": "status = 'active' or end_date IS NULL",
+    "inactive/closed": "status = 'inactive' or end_date IS NOT NULL",
+    "each/by/per": "GROUP BY",
+    "top n": "ORDER BY DESC LIMIT n",
+    "between": "BETWEEN x AND y or >= x AND <= y"
+  }
+}

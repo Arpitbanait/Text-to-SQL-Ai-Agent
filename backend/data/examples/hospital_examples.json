@@ -1,0 +1,45 @@
+{
+  "database_name": "hospital_db",
+  "few_shot_examples": [
+    {
+      "question": "Show the total number of patients admitted in the last 30 days",
+      "sql": "SELECT COUNT(DISTINCT patient_id) AS total_admitted_patients FROM admissions WHERE admission_date >= DATE_SUB(NOW(), INTERVAL 30 DAY);"
+    },
+    {
+      "question": "Find all patients currently admitted to the hospital",
+      "sql": "SELECT p.patient_id, p.first_name, p.last_name, a.admission_date FROM patients p JOIN admissions a ON p.patient_id = a.patient_id WHERE a.discharge_date IS NULL;"
+    },
+    {
+      "question": "List doctors in the Cardiology department",
+      "sql": "SELECT doctor_id, first_name, last_name FROM doctors WHERE department = 'Cardiology';"
+    },
+    {
+      "question": "Get the average cost of treatments by treatment type",
+      "sql": "SELECT treatment_type, AVG(cost) AS average_cost FROM treatments GROUP BY treatment_type ORDER BY average_cost DESC;"
+    },
+    {
+      "question": "Find patients who have been admitted more than once",
+      "sql": "SELECT p.patient_id, p.first_name, p.last_name, COUNT(a.admission_id) AS admission_count FROM patients p JOIN admissions a ON p.patient_id = a.patient_id GROUP BY p.patient_id HAVING COUNT(a.admission_id) > 1;"
+    },
+    {
+      "question": "Show all medications currently prescribed to patients",
+      "sql": "SELECT p.patient_id, p.first_name, p.last_name, m.drug_name, m.dosage, m.frequency FROM patients p JOIN medications m ON p.patient_id = m.patient_id WHERE m.end_date IS NULL;"
+    },
+    {
+      "question": "Get the list of patients treated by Doctor Smith",
+      "sql": "SELECT DISTINCT p.patient_id, p.first_name, p.last_name FROM patients p JOIN treatments t ON p.patient_id IN (SELECT patient_id FROM admissions WHERE admission_id = t.admission_id) JOIN doctors d ON t.doctor_id = d.doctor_id WHERE d.last_name = 'Smith';"
+    },
+    {
+      "question": "Find patients with admission duration longer than 7 days",
+      "sql": "SELECT p.patient_id, p.first_name, p.last_name, DATEDIFF(a.discharge_date, a.admission_date) AS days_admitted FROM patients p JOIN admissions a ON p.patient_id = a.patient_id WHERE DATEDIFF(a.discharge_date, a.admission_date) > 7;"
+    },
+    {
+      "question": "List all treatments performed in the last 30 days",
+      "sql": "SELECT t.treatment_id, p.patient_id, p.first_name, p.last_name, t.treatment_type, t.treatment_date FROM treatments t JOIN admissions a ON t.admission_id = a.admission_id JOIN patients p ON a.patient_id = p.patient_id WHERE t.treatment_date >= DATE_SUB(NOW(), INTERVAL 30 DAY);"
+    },
+    {
+      "question": "Count the number of beds occupied in each department",
+      "sql": "SELECT d.name, COUNT(DISTINCT a.admission_id) AS occupied_beds FROM departments d JOIN doctors doc ON d.head_doctor = doc.doctor_id JOIN admissions a ON d.department_id IN (SELECT DISTINCT department_id FROM doctors WHERE doctor_id = a.patient_id) WHERE a.discharge_date IS NULL GROUP BY d.name;"
+    }
+  ]
+}
