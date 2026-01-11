@@ -100,7 +100,7 @@ async def text_to_sql_stream(request: TextToSQLRequest):
     except Text2SQLException as e:
         logger.error(f"Streaming error: {str(e)}")
         async def error_gen():
-            yield f"event: error\ndata: {json.dumps({"detail": str(e)})}\n\n"
+            yield "event: error\ndata: " + json.dumps({"detail": str(e)}) + "\n\n"
             yield "event: done\n\n"
         return StreamingResponse(error_gen(), media_type="text/event-stream", status_code=status.HTTP_400_BAD_REQUEST)
 
