@@ -34,8 +34,10 @@ class SchemaIndexer:
             metadatas.append(doc_data["metadata"])
             ids.append(doc_data["id"])
         
+
         # Generate embeddings
         embeddings = await self.embedding_generator.generate_embeddings(documents)
+        
         
         # Add to vector store
         self.vector_store.add_documents(

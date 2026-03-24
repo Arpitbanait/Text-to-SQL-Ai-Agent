@@ -13,6 +13,7 @@ class EmbeddingGenerator:
         self.model_name = settings.EMBEDDING_MODEL
         self.model = None
         self._load_model()
+        
     
     def _load_model(self):
         """Load the sentence transformer model"""
@@ -23,10 +24,11 @@ class EmbeddingGenerator:
             logger.error(f"Failed to load embedding model: {str(e)}")
             raise VectorStoreException(f"Failed to load embedding model: {str(e)}")
     
+
     async def generate_embedding(self, text: str) -> List[float]:
         """Generate embedding for a single text"""
         try:
-            # Run in thread pool to avoid blocking
+            
             loop = asyncio.get_event_loop()
             embedding = await loop.run_in_executor(
                 None,

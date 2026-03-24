@@ -73,7 +73,7 @@ Description (1-2 sentences):"""
         for table in tables:
             table_info = [f"Table: {table.get('name')}"]
             
-            # Add columns
+           
             columns = table.get('columns', [])
             if columns:
                 table_info.append("Columns:")
@@ -91,3 +91,4 @@ Description (1-2 sentences):"""
 
 
 prompt_templates = PromptTemplates()
+

@@ -8,7 +8,6 @@ from app.utils.exceptions import Text2SQLException
 
 router = APIRouter(prefix="/schema", tags=["Schema"])
 
-
 @router.post(
     "/index",
     response_model=SchemaIndexResponse,
@@ -18,16 +17,14 @@ router = APIRouter(prefix="/schema", tags=["Schema"])
 async def index_schema(request: SchemaIndexRequest):
     """
     Index a database schema into the vector store.
-    
     - **connection_string**: Database connection string
     - **database_name**: Name of the database
     - **description**: Optional description of the database
     """
     try:
         logger.info(f"Indexing schema for database: {request.database_name}")
-        
         response = await schema_service.index_schema(request)
-        
+
         return response
     
     except Text2SQLException as e:
@@ -53,7 +50,6 @@ async def index_schema(request: SchemaIndexRequest):
 async def get_schema(database_name: str):
     """
     Get schema information for a database.
-    
     - **database_name**: Name of the database
     """
     try:

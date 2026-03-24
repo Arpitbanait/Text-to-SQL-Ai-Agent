@@ -20,13 +20,13 @@ class SQLGenerationChain:
         """Generate SQL from user query"""
         logger.info(f"Generating SQL for query: {user_query}")
         
-        # Build prompt
+        
         system_prompt = prompt_templates.sql_generation_system_prompt(
             schema_context,
             few_shot_examples or ""
         )
         
-        # Generate SQL
+        
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_query}
@@ -34,7 +34,7 @@ class SQLGenerationChain:
         
         response = await self.llm.generate_completion(messages)
         
-        # Clean and extract SQL
+        
         sql = clean_sql_query(response)
         
         return {
@@ -81,6 +81,6 @@ class SchemaDescriptionChain:
         return description.strip()
 
 
-# Global instances
+
 sql_generation_chain = SQLGenerationChain()
 schema_description_chain = SchemaDescriptionChain()

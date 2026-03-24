@@ -22,7 +22,7 @@ class LLMClient:
     ) -> str:
         """Generate completion from LLM"""
         try:
-            # Convert messages format for Anthropic
+            
             system_message = ""
             anthropic_messages = []
             
@@ -35,7 +35,7 @@ class LLMClient:
                         "content": msg["content"]
                     })
             
-            # Call Anthropic API
+            
             response = await self.client.messages.create(
                 model=self.model,
                 max_tokens=max_tokens or self.max_tokens,
@@ -98,5 +98,4 @@ Instructions:
         return prompt
 
 
-# Global instance
 llm_client = LLMClient()

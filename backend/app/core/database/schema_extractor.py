@@ -24,11 +24,9 @@ class SchemaExtractor:
             engine = self.db_manager.get_engine(connection_string)
             inspector = inspect(engine)
             
-            # Get all table names
             table_names = inspector.get_table_names()
             logger.info(f"Found {len(table_names)} tables")
             
-            # Extract schema for each table
             tables = []
             for table_name in table_names:
                 table_schema = self._extract_table_schema(inspector, table_name)
@@ -56,11 +54,11 @@ class SchemaExtractor:
         columns = []
         column_info = inspector.get_columns(table_name)
         
-        # Get primary keys
+        
         pk_constraint = inspector.get_pk_constraint(table_name)
         primary_keys = pk_constraint.get('constrained_columns', [])
         
-        # Get foreign keys
+        
         fk_constraints = inspector.get_foreign_keys(table_name)
         foreign_key_map = {}
         
@@ -74,7 +72,7 @@ class SchemaExtractor:
                         'column': ref_cols[0]
                     }
         
-        # Process each column
+        
         for col in column_info:
             col_name = col['name']
             
@@ -98,5 +96,5 @@ class SchemaExtractor:
         )
 
 
-# Global instance
+
 schema_extractor = SchemaExtractor()
