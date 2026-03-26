@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
-from app.core.rag.vector_store import vector_store
-from app.core.rag.embeddings import embedding_generator
+from app.core.rag.vector_store import get_vector_store
+from app.core.rag.embeddings import get_embedding_generator
 from app.models.schema import TableSchema, DatabaseSchema
 from app.utils.logger import logger
 import uuid
@@ -10,8 +10,18 @@ class SchemaIndexer:
     """Index database schemas into vector store"""
     
     def __init__(self):
-        self.vector_store = vector_store
-        self.embedding_generator = embedding_generator
+        self.vector_store = None
+        self.embedding_generator = None
+
+    def _get_vector_store(self):
+        if self.vector_store is None:
+            self.vector_store = get_vector_store()
+        return self.vector_store
+
+    def _get_embedding_generator(self):
+        if self.embedding_generator is None:
+            self.embedding_generator = get_embedding_generator()
+        return self.embedding_generator
     
     async def index_database_schema(
         self,
@@ -19,13 +29,15 @@ class SchemaIndexer:
     ) -> Dict[str, int]:
         """Index entire database schema"""
         logger.info(f"Indexing schema for database: {database_schema.name}")
+        vector_store = self._get_vector_store()
+        embedding_generator = self._get_embedding_generator()
         
         documents = []
         metadatas = []
         ids = []
         
         # Delete existing documents for this database
-        self.vector_store.delete_by_database(database_schema.name)
+        vector_store.delete_by_database(database_schema.name)
         
         # Process each table
         for table in database_schema.tables:
@@ -36,11 +48,11 @@ class SchemaIndexer:
         
 
         # Generate embeddings
-        embeddings = await self.embedding_generator.generate_embeddings(documents)
+        embeddings = await embedding_generator.generate_embeddings(documents)
         
         
         # Add to vector store
-        self.vector_store.add_documents(
+        vector_store.add_documents(
             documents=documents,
             embeddings=embeddings,
             metadatas=metadatas,

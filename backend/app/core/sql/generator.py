@@ -10,7 +10,12 @@ class SQLGenerator:
     
     def __init__(self):
         self.chain = sql_generation_chain
-        self.retriever = schema_retriever
+        self.retriever = None
+
+    def _get_retriever(self):
+        if self.retriever is None:
+            self.retriever = schema_retriever
+        return self.retriever
     
     async def generate(
         self,
@@ -20,10 +25,11 @@ class SQLGenerator:
     ) -> Dict[str, Any]:
         """Generate SQL query from natural language query"""
         logger.info(f"Generating SQL for query: {user_query}")
+        retriever = self._get_retriever()
         
         try:
             # Retrieve relevant schema context
-            context_result = await self.retriever.retrieve_context(
+            context_result = await retriever.retrieve_context(
                 user_query=user_query,
                 database_name=database_name,
                 top_k=5

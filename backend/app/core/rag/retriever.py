@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
-from app.core.rag.vector_store import vector_store
-from app.core.rag.embeddings import embedding_generator
+from app.core.rag.vector_store import get_vector_store
+from app.core.rag.embeddings import get_embedding_generator
 from app.utils.logger import logger
 
 
@@ -8,8 +8,18 @@ class SchemaRetriever:
     """Retrieve relevant schema context using RAG"""
     
     def __init__(self):
-        self.vector_store = vector_store
-        self.embedding_generator = embedding_generator
+        self.vector_store = None
+        self.embedding_generator = None
+
+    def _get_vector_store(self):
+        if self.vector_store is None:
+            self.vector_store = get_vector_store()
+        return self.vector_store
+
+    def _get_embedding_generator(self):
+        if self.embedding_generator is None:
+            self.embedding_generator = get_embedding_generator()
+        return self.embedding_generator
     
     async def retrieve_context(
         self,
@@ -19,12 +29,14 @@ class SchemaRetriever:
     ) -> Dict[str, Any]:
         """Retrieve relevant schema context for user query"""
         logger.info(f"Retrieving context for query: {user_query}")
+        embedding_generator = self._get_embedding_generator()
+        vector_store = self._get_vector_store()
         
         # Generate query embedding
-        query_embedding = await self.embedding_generator.generate_embedding(user_query)
+        query_embedding = await embedding_generator.generate_embedding(user_query)
         
         # Query vector store
-        results = self.vector_store.query(
+        results = vector_store.query(
             query_embedding=query_embedding,
             n_results=top_k,
             where={"database_name": database_name}

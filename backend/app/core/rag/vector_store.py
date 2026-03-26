@@ -107,5 +107,14 @@ class VectorStore:
             return 0
 
 
-# Global instance
-vector_store = VectorStore()
+_vector_store_instance: Optional[VectorStore] = None
+
+
+def get_vector_store() -> VectorStore:
+    """Lazily initialize and return the vector store singleton."""
+    global _vector_store_instance
+
+    if _vector_store_instance is None:
+        _vector_store_instance = VectorStore()
+
+    return _vector_store_instance
