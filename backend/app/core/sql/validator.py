@@ -1,8 +1,12 @@
-import sqlparse
 from typing import Dict, Any, List
 from app.utils.logger import logger
 from app.utils.exceptions import ValidationException
 import re
+
+try:
+    import sqlparse
+except ModuleNotFoundError:
+    sqlparse = None
 
 
 class SQLValidator:
@@ -89,6 +93,12 @@ class SQLValidator:
     def _check_syntax(self, sql: str) -> str:
         """Basic syntax validation using sqlparse"""
         try:
+            if sqlparse is None:
+                # Fallback when optional dependency is not installed in runtime env.
+                if not re.match(r"^\s*(SELECT|WITH)\b", sql, re.IGNORECASE):
+                    return "Only SELECT/WITH statements are supported"
+                return ""
+
             parsed = sqlparse.parse(sql)
             
             if not parsed:
@@ -109,11 +119,18 @@ class SQLValidator:
     
     def _has_multiple_statements(self, sql: str) -> bool:
         """Check if SQL contains multiple statements"""
+        if sqlparse is None:
+            # Conservative fallback: reject explicit semicolon-separated statements.
+            return ";" in sql.strip().rstrip(";")
+
         parsed = sqlparse.parse(sql)
         return len(parsed) > 1
     
     def sanitize_query(self, sql: str) -> str:
         """Sanitize SQL query"""
+        if sqlparse is None:
+            return sql.strip()
+
         # Format the SQL for better readability
         formatted = sqlparse.format(
             sql,
