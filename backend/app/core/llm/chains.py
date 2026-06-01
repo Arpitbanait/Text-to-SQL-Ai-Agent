@@ -15,7 +15,8 @@ class SQLGenerationChain:
         self,
         user_query: str,
         schema_context: str,
-        few_shot_examples: Optional[str] = None
+        few_shot_examples: Optional[str] = None,
+        validation_feedback: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Generate SQL from user query"""
         logger.info(f"Generating SQL for query: {user_query}")
@@ -27,9 +28,16 @@ class SQLGenerationChain:
         )
         
         
+        user_content = user_query
+        if validation_feedback:
+            user_content += (
+                "\n\nPrevious SQL failed validation. Fix all issues below and return only corrected SQL:\n"
+                f"{validation_feedback}"
+            )
+
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_query}
+            {"role": "user", "content": user_content}
         ]
         
         response = await self.llm.generate_completion(messages)

@@ -30,7 +30,7 @@ async def text_to_sql(request: TextToSQLRequest):
     try:
         logger.info(f"Received text-to-SQL request: {request.query}")
 
-        # Check cache
+        
         cache_key = cache_service.generate_query_key(
             query=request.query,
             database_name=request.database_name,
@@ -41,10 +41,10 @@ async def text_to_sql(request: TextToSQLRequest):
             logger.info("Returning cached result")
             return TextToSQLResponse(**cached_result)
 
-        # Process request
+        
         response = await query_service.text_to_sql(request)
 
-        # Cache result
+        
         cache_service.set(cache_key, response.dict())
 
         return response
@@ -82,7 +82,7 @@ async def text_to_sql_stream(request: TextToSQLRequest):
             return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
         async def event_generator():
-            # Send SQL first
+            
             yield sse_event(
                 "sql",
                 {
@@ -92,7 +92,7 @@ async def text_to_sql_stream(request: TextToSQLRequest):
                 },
             )
 
-            # Stream explanation word-by-word
+            
             if request.include_explanation and response.explanation:
                 words = response.explanation.split()
                 for word in words:
@@ -108,9 +108,10 @@ async def text_to_sql_stream(request: TextToSQLRequest):
 
     except Text2SQLException as e:
         logger.error(f"Streaming error: {str(e)}")
+        error_detail = str(e)
 
         async def error_gen():
-            error_data = json.dumps({"detail": str(e)})
+            error_data = json.dumps({"detail": error_detail})
             yield "event: error\ndata: " + error_data + "\n\n"
             yield "event: done\n\n"
 
@@ -122,9 +123,10 @@ async def text_to_sql_stream(request: TextToSQLRequest):
 
     except Exception as e:
         logger.error(f"Unexpected streaming error: {str(e)}")
+        error_detail = "Internal server error"
 
         async def error_gen():
-            error_data = json.dumps({"detail": "Internal server error"})
+            error_data = json.dumps({"detail": error_detail})
             yield "event: error\ndata: " + error_data + "\n\n"
             yield "event: done\n\n"
 

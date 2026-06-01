@@ -21,7 +21,8 @@ class SQLGenerator:
         self,
         user_query: str,
         database_name: str,
-        include_explanation: bool = True
+        include_explanation: bool = True,
+        validation_feedback: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Generate SQL query from natural language query"""
         logger.info(f"Generating SQL for query: {user_query}")
@@ -41,7 +42,8 @@ class SQLGenerator:
             result = await self.chain.generate(
                 user_query=user_query,
                 schema_context=schema_context,
-                few_shot_examples=None
+                few_shot_examples=None,
+                validation_feedback=validation_feedback,
             )
             
             sql_query = result["sql"]

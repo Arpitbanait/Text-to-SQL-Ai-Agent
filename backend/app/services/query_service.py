@@ -24,27 +24,55 @@ class QueryService:
         logger.info(f"Processing text-to-SQL request for database: {request.database_name}")
         
         try:
-            # Generate SQL
-            generation_result = await self.generator.generate(
-                user_query=request.query,
-                database_name=request.database_name,
-                include_explanation=request.include_explanation
-            )
-            
-            sql_query_raw = generation_result["sql_query"]
-            # Log generated SQL for troubleshooting
-            logger.info(f"Generated SQL candidate: {sql_query_raw}")
+            max_attempts = 3
+            generation_result: Dict[str, Any] = {}
+            sql_query = ""
+            validation_result: Dict[str, Any] = {
+                "is_valid": False,
+                "errors": ["Validation not executed"],
+                "warnings": [],
+            }
+            feedback: str | None = None
 
-            # Extract clean SQL from potential markdown/prose
-            sql_query = self._extract_sql(sql_query_raw)
-            
-            # Validate SQL
-            validation_result = self.validator.validate(sql_query)
-            
-            if not validation_result["is_valid"]:
-                raise ValidationException(
-                    f"Generated SQL is invalid: {', '.join(validation_result['errors'])}"
+            for attempt in range(1, max_attempts + 1):
+                generation_result = await self.generator.generate(
+                    user_query=request.query,
+                    database_name=request.database_name,
+                    include_explanation=request.include_explanation,
+                    validation_feedback=feedback,
                 )
+
+                sql_query_raw = generation_result["sql_query"]
+                logger.info(f"Generated SQL candidate (attempt {attempt}/{max_attempts}): {sql_query_raw}")
+
+                sql_query = self._extract_sql(sql_query_raw)
+                validation_result = self.validator.validate(
+                    sql_query,
+                    database_name=request.database_name,
+                )
+
+                if validation_result["is_valid"]:
+                    logger.info(f"SQL validation passed on attempt {attempt}")
+                    break
+
+                logger.warning(
+                    "SQL validation failed on attempt %s: %s",
+                    attempt,
+                    ", ".join(validation_result["errors"]),
+                )
+
+                if attempt < max_attempts:
+                    warning_text = ", ".join(validation_result["warnings"]) or "none"
+                    feedback = (
+                        f"Database: {request.database_name}. "
+                        f"Errors: {', '.join(validation_result['errors'])}. "
+                        f"Warnings: {warning_text}."
+                    )
+                else:
+                    raise ValidationException(
+                        f"Generated SQL is invalid after {max_attempts} attempts: "
+                        f"{', '.join(validation_result['errors'])}"
+                    )
             
             # Sanitize query
             sql_query = self.validator.sanitize_query(sql_query)

@@ -65,5 +65,4 @@ class DatabaseConnectionManager:
         logger.info("All database connections closed")
 
 
-# Global instance
 db_manager = DatabaseConnectionManager()

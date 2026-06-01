@@ -14,12 +14,15 @@ Database Schema:
 
 Guidelines:
 - Generate syntactically correct SQL
+- Use ONLY table names and column names present in the schema above
 - Use table aliases for readability
+- Qualify columns with table aliases when multiple tables are used
 - Include appropriate JOINs for multi-table queries
 - Add WHERE clauses for filtering
 - Use aggregate functions (COUNT, SUM, AVG) when needed
 - Format dates properly
 - Handle NULL values appropriately
+- Do NOT invent tables or columns that are not in the provided schema
 - Return ONLY the SQL query in a code block
 
 """

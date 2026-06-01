@@ -66,9 +66,9 @@ Create a `.env` file in the `backend` directory with the following variables:
 ```env
 # LLM Configuration
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
-LLM_MODEL=claude-3-5-sonnet-20241022
+MODEL_NAME=claude-3-5-haiku-latest
 LLM_TEMPERATURE=0.0
-LLM_MAX_TOKENS=2000
+MAX_TOKENS=2000
 
 # Database Configuration
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname

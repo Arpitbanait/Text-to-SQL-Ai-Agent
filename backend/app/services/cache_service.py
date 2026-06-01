@@ -1,8 +1,8 @@
 try:
-    import redis  # type: ignore
+    import redis 
 except ImportError:
     redis = None
-    # Redis client not installed; caching will be disabled gracefully
+   
 import json
 from typing import Any, Optional
 from app.config import settings
@@ -14,7 +14,7 @@ class CacheService:
     
     def __init__(self):
         self.redis_client = None
-        self._connect()
+        self._connect() 
     
     def _connect(self):
         """Connect to Redis"""

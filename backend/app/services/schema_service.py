@@ -41,7 +41,7 @@ class SchemaService:
             # Save metadata
             metadata = {
                 "database_name": request.database_name,
-                "connection_string": request.connection_string,  # In production, encrypt this
+                "connection_string": request.connection_string,  
                 "description": request.description,
                 "tables": [t.name for t in database_schema.tables],
                 "table_count": len(database_schema.tables),

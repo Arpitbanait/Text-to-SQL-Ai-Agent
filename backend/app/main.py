@@ -4,7 +4,7 @@ from app.config import settings
 from app.api import api_router
 from app.utils.logger import logger
 
-# Initialize FastAPI app
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
@@ -13,16 +13,16 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=".*",  # Allow all origins in dev
+    allow_origin_regex=".*",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_origins=["*"],
 )
 
-# Include API router
+
 app.include_router(api_router)
 
 
