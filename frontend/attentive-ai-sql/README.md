@@ -65,7 +65,7 @@ bun install
 Create a `.env` file in the `frontend/attentive-ai-sql` directory:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8000/api
+VITE_API_BASE_URL=https://text-to-sql-ai-agent.onrender.com
 VITE_APP_TITLE=Text-to-SQL Generator
 ```
 
@@ -139,7 +139,7 @@ frontend/attentive-ai-sql/
 
 ## Connecting to Backend
 
-Ensure the backend API is running on `http://localhost:8000` or update the `VITE_API_BASE_URL` in your `.env` file.
+Ensure the backend API is reachable at `https://text-to-sql-ai-agent.onrender.com` or update the `VITE_API_BASE_URL` in your `.env` file.
 
 The frontend expects the following API endpoints:
 
